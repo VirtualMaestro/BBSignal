@@ -330,6 +330,10 @@ package bb.signals
 		//  SIGNAL'S POOL SYSTEM //
 		///////////////////////////
 
+		//
+		static private var _pool:Array;
+		static private var _available:int = 0;
+
 		/**
 		 * Gets signal instance.
 		 */
@@ -341,10 +345,6 @@ package bb.signals
 
 			return signal;
 		}
-
-		//
-		static private var _pool:Array;
-		static private var _available:int = 0;
 
 		/**
 		 * Put signal to pool.
