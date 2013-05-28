@@ -2,6 +2,7 @@ package bb.signals
 {
 	/**
 	 * Класс реализует в себе альтернативу событийной модели именуемой сигнал.
+	 * NEW VER
 	 * @author VirtualMaestro
 	 */
 	public class BBSignal
