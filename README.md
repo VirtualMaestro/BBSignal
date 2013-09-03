@@ -5,6 +5,7 @@ Alternative event system
 
 Simple, small and fast event system - Signal.
 Pretty simple API.
+
 How to use:
 
 1) Need to create signal and then add listener.
