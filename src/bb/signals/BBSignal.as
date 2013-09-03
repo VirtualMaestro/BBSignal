@@ -1,15 +1,20 @@
 package bb.signals
 {
 	/**
-	 * Класс реализует в себе альтернативу событийной модели именуемой сигнал.
+	 * Implementation of alternative event system - Signal.
 	 * @author VirtualMaestro
 	 */
 	public class BBSignal
 	{
 		/**
-		 * Ссылка на объект которому принадлежит данный сигнал.
+		 * Reference to the object which owned current signal.
 		 */
 		public var dispatcher:Object = null;
+
+		/**
+		 * Marks signal for once dispatching.
+		 * Mean after first dispatching all signal will be removed (doesn't matter listener was marked as once or not).
+		 */
 		public var onceSignal:Boolean = false;
 
 		//
@@ -22,9 +27,9 @@ package bb.signals
 		private var _numListeners:int = 0;
 
 		/**
-		 * @param p_dispatcher - объект, которому принадлежит этот сигнал. (Обычно где обявляется сигнла, этот параметр принимает this)
-		 * @param p_onceSignal - флаг указывает что все слушатели, не зависимо от того скаким параметром (once = true/false) они были добавлены,
-		 *                       будут удалены после первой отправки сообщения.
+		 * @param p_dispatcher - Reference to the object which owned current signal.
+		 * @param p_onceSignal - Marks signal for once dispatching.
+		 *                       Mean after first dispatching all signal will be removed (doesn't matter listener was marked as once or not).
 		 */
 		public function BBSignal(p_dispatcher:Object = null, p_onceSignal:Boolean = false)
 		{
@@ -34,8 +39,9 @@ package bb.signals
 
 		/**
 		 * Добавляет слушатель в сигнал.
-		 * @param p_listener - функция обработчик
-		 * @param p_once - если true то этот слушатель будет вызван один раз после чего удален.
+		 * Adds listener to signal.
+		 * @param p_listener - listener function
+		 * @param p_once - if 'true' listener removes after dispatching.
 		 */
 		public function add(p_listener:Function, p_once:Boolean = false):void
 		{
@@ -44,10 +50,10 @@ package bb.signals
 
 			if (_tail == null) _head = node;
 			else
-		    {
-			    _tail.next = node;
-			    node.prev = _tail;
-		    }
+			{
+				_tail.next = node;
+				node.prev = _tail;
+			}
 
 			_tail = node;
 			node.once = p_once;
@@ -55,7 +61,29 @@ package bb.signals
 		}
 
 		/**
-		 * Удаляет заданный слушатель.
+		 * Adds listener as first of the list.
+		 * @param p_listener - listener Function.
+		 * @param p_once - if 'true' listener removes after dispatching.
+		 */
+		public function addFirst(p_listener:Function, p_once:Boolean = false):void
+		{
+			var node:NodeSignal = getNode();
+			node.listener = p_listener;
+
+			if (_tail == null) _head = _tail = node;
+			else
+			{
+				_head.prev = node;
+				node.next = _head;
+				_head = node;
+			}
+
+			node.once = p_once;
+			_numListeners++;
+		}
+
+		/**
+		 * Removes given listener function.
 		 */
 		public function remove(p_listener:Function):void
 		{
@@ -64,7 +92,7 @@ package bb.signals
 				var node:NodeSignal = _head;
 				var curNode:NodeSignal;
 
-				while(node)
+				while (node)
 				{
 					curNode = node;
 					node = node.next;
@@ -82,7 +110,7 @@ package bb.signals
 		}
 
 		/**
-		 * Удаляет все слушатели.
+		 * Removes all listeners.
 		 */
 		public function removeAllListeners():void
 		{
@@ -91,7 +119,7 @@ package bb.signals
 				var node:NodeSignal = _head;
 				var curNode:NodeSignal;
 
-				while(node)
+				while (node)
 				{
 					curNode = node;
 					node = node.next;
@@ -108,7 +136,7 @@ package bb.signals
 		}
 
 		/**
-		 * Удаляется текущий вызванный обработчик.
+		 * Removes current processed listener.
 		 */
 		public function removeCurrentListener():void
 		{
@@ -117,12 +145,12 @@ package bb.signals
 		}
 
 		/**
-		 * Проверяет существует ли данный слушатель в этои сигнале.
+		 * Check if given listener already in signal.
 		 */
 		public function contains(p_listener:Function):Boolean
 		{
 			var node:NodeSignal = _head;
-			while(node)
+			while (node)
 			{
 				if (node.listener == p_listener) return true;
 				node = node.next;
@@ -132,7 +160,7 @@ package bb.signals
 		}
 
 		/**
-		 * Посылает сигнал (сигнал посылается от первого до последнего).
+		 * Dispatches signal in direct order (from first to last).
 		 */
 		public function dispatch(parameters:Object = null):void
 		{
@@ -167,7 +195,7 @@ package bb.signals
 		}
 
 		/**
-		 * Посылает сигнал (сигнал посылается от последнего к первому слушателю).
+		 * Dispatches signal in reverse order (from last to first).
 		 */
 		public function dispatchReverse(parameters:Object = null):void
 		{
@@ -202,7 +230,7 @@ package bb.signals
 		}
 
 		/**
-		 * Прекращает рассылку сигнала.
+		 * Interrupt dispatching.
 		 */
 		public function stopDispatching():void
 		{
@@ -212,7 +240,7 @@ package bb.signals
 		}
 
 		/**
-		 * Возвращает количество слушателей.
+		 * Returns number of listeners.
 		 */
 		public function get numListeners():int
 		{
@@ -220,7 +248,7 @@ package bb.signals
 		}
 
 		/**
-		 * Возвращает параметры, которые были переданы при диспатчинге.
+		 * Returns parameters which were sends with dispatching.
 		 */
 		public function get params():Object
 		{
@@ -258,8 +286,8 @@ package bb.signals
 		}
 
 		/**
-		 * При вызове данного метода сигнал будет очищен и добавлен в пул для переиспользования.
-		 * Чтобы очистить пул от сигналов хранящихся там нужно вызвать статический метод rid.
+		 * Signal disposed and added to pool for reuse.
+		 * in order to clear pool of signals need to invoke method 'rid'.
 		 */
 		public function dispose():void
 		{
@@ -315,7 +343,7 @@ package bb.signals
 			if (_headPool)
 			{
 				var node:NodeSignal;
-				while(_headPool)
+				while (_headPool)
 				{
 					node = _headPool;
 					_headPool = _headPool.next;
