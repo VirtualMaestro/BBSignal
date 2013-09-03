@@ -66,4 +66,4 @@ BBSignal.rid();
 
 There is possible to get dispatcher from signal instance - object which contains current signal instance.
 There is 'once' parameter which gives possibilities mark whole signal as 'once' or specify listener.
-Once param mean that listeners/listener will invoke only one time and after invocation will remove from signal.
+Once param mean that listeners/listener will be invoked only one time and after invocation removed from signal.
