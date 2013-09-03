@@ -4,7 +4,7 @@ BBSignal
 Alternative event system
 
 Simple, small and fast event system - Signal.
-
+Pretty simple API.
 How to use:
 
 1) Need to create signal and then add listener.
@@ -63,3 +63,7 @@ myClass.onReadySignal.dispose();
 ```actionscript3
 BBSignal.rid();
 ```
+
+There is possible to get dispatcher from signal instance - object which contains current signal instance.
+There is 'once' parameter which gives possibilities mark whole signal as 'once' or specify listener.
+Once param mean that listeners/listener will invoke only one time and after invocation will remove from signal.
