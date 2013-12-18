@@ -359,7 +359,7 @@ package bb.signals
 		///////////////////////////
 
 		//
-		static private var _pool:Array;
+		static private var _pool:Vector.<BBSignal> = new <BBSignal>[];
 		static private var _available:int = 0;
 
 		/**
@@ -379,7 +379,6 @@ package bb.signals
 		 */
 		static private function put(p_signal:BBSignal):void
 		{
-			if (_pool == null) _pool = [];
 			_pool[_available++] = p_signal;
 		}
 
@@ -406,17 +405,13 @@ package bb.signals
 		 */
 		static public function rid():void
 		{
-			if (_pool)
+			for (var i:int = 0; i < _available; i++)
 			{
-				for (var i:int = 0; i < _available; i++)
-				{
-					_pool[i] = null;
-				}
-
-				_pool.length = 0;
-				_pool = null;
-				_available = 0;
+				_pool[i] = null;
 			}
+
+			_pool.length = 0;
+			_available = 0;
 		}
 	}
 }
