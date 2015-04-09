@@ -3,13 +3,12 @@ BBSignal
 
 Alternative event system
 
-Simple, small and fast event system - Signal.
-Pretty simple API.
+Fast, lightweight and simple signal.
 
 How to use:
 
 1) Need to create signal and then add listener.
-All listeners must have parameter - BBSignal.
+Each listener must takes as a parameter BBSignal.
 
 ```actionscript3
 class SomeClass
@@ -30,10 +29,15 @@ private function listener(p_signal:BBSignal):void
 {
 
 }
-
 ```
 
-2) Need to remove invoked listener and stop dispatching of signal.
+2) Need to remove handler from signal.
+
+```actionscript3
+onReadySignal.remove(listener);
+```
+
+3) Need to remove handler from itself and stop dispatching.
 
 ```actionscript3
 private function listener(p_signal:BBSignal):void
@@ -41,10 +45,9 @@ private function listener(p_signal:BBSignal):void
       p_signal.removeCurrentListener();
       p_signal.stopDispatching();
 }
-
 ```
 
-3) Need to dispatch with parameters.
+4) Need to dispatch with parameters.
 
 ```actionscript3
 myClass.onReadySignal.dispatch("Hello");
@@ -55,16 +58,25 @@ private function listener(p_signal:BBSignal):void
 }
 ```
 
-4) Need to remove signal
+5) If need to know who is dispatcher.
+
+```actionscript3
+private function listener(p_signal:BBSignal):void
+{
+      p_signal.dispatcher;
+}
+```
+
+6) Need to remove signal
 ```actionscript3
 myClass.onReadySignal.dispose();
 ```
 
-5) Need to clear pool of signals
+7) Need to clear pool of signals
 ```actionscript3
 BBSignal.rid();
 ```
 
-There is possible to get dispatcher from signal instance - object which contains current signal instance.
+No one object is created/destroyed if it is not needed. Most of operations performs very fast.
 There is 'once' parameter which gives possibilities mark whole signal as 'once' or specify listener.
 Once param mean that listeners/listener will be invoked only one time and after invocation removed from signal.
